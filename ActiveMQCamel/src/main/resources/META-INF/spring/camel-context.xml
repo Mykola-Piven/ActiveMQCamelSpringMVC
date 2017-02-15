@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <broker xmlns="http://activemq.apache.org/schema/core" useJmx="true" persistent="false">
+        <transportConnectors>
+            <transportConnector uri="tcp://localhost:61616"/>
+        </transportConnectors>
+    </broker>
+
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="brokerURL" value="failover:tcp://localhost:61616"/>
+    </bean>
+
+    <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
+        <propertyPlaceholder id="properties" location="application.properties"/>
+        <route>
+            <from uri="direct:start"/>
+            <to uri="activemq:queue:message-queue"/>
+        </route>
+        <route>
+            <from uri="direct:in"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setBody>
+                <simple>{${in.body}}</simple>
+            </setBody>
+            <to uri="{{web.service.url}}?{{web.service.parameter}}"/>
+        </route>
+    </camelContext>
+</beans>
