@@ -119,12 +119,6 @@
             <artifactId>camel-test-spring</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>tonichealth.test.task</groupId>
-            <artifactId>CamelActiveMq</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
