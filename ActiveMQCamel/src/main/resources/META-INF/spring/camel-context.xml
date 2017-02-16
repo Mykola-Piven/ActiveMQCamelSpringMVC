@@ -16,7 +16,6 @@
     <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
         <property name="brokerURL" value="failover:tcp://localhost:61616"/>
     </bean>
-
     <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring">
         <propertyPlaceholder id="properties" location="application.properties"/>
         <route>
@@ -25,13 +24,16 @@
         </route>
         <route>
             <from uri="direct:in"/>
+            <setHeader headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
             <setHeader headerName="CamelHttpMethod">
                 <constant>POST</constant>
             </setHeader>
             <setBody>
-                <simple>{${in.body}}</simple>
+                <simple>{"{{mybody.parameter}}":"${in.body}","{{myaction.parameter}}":"${in.header.action}"}</simple>
             </setBody>
-            <to uri="{{web.service.url}}?{{web.service.parameter}}"/>
+            <to uri="{{web.service.url}}"/>
         </route>
     </camelContext>
 </beans>

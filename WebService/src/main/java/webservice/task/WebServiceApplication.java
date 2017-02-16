@@ -1,4 +1,4 @@
-package webservise.task;
+package webservice.task;
 
 
 import org.springframework.boot.SpringApplication;

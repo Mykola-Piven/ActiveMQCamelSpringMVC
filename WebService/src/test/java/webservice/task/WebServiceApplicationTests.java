@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import webservise.task.WebServiceApplication;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,18 +16,18 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(classes = WebServiceApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class WebServiceApplicationTests {
 
-  public static final String TEST_STRING = "Test text for message body: iteration ";
-  public static final String RESPONSE_STRING = "Request is saved to file";
+  private static final String TEST_BODY = "Test text for message body, iteration ";
+  private static final String TEST_HEADER = "SaveToFile";
 
   @Test
   public void testCamelRouting() throws Exception {
     CamelServiceSpringDSL service = new CamelServiceSpringDSL();
 
     for (int i = 0; i < 10; i++) {
-      service.sendToActiveMQ(TEST_STRING + i);
+      service.sendToActiveMQ(TEST_HEADER, TEST_BODY + (i + 1));
       Thread.sleep(TimeUnit.SECONDS.toMillis(2));
       String response = service.receiveFromActiveMQ();
-      Assert.assertTrue(response.contains(RESPONSE_STRING));
+      Assert.assertTrue(response.contains(Constants.SUCCESS_MESSAGE));
     }
   }
 
